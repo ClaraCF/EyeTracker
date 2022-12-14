@@ -10,7 +10,7 @@ set(Project_Author      ClaraCF)
 
 # Configure project
 project(${Project_Title} LANGUAGES CXX VERSION ${Project_Version})
-set(CMAKE_CXX_STANDARD 17 REQUIRED ON)
+#set(CMAKE_CXX_STANDARD 17 REQUIRED ON)
 
 
 ### Options ###
@@ -93,13 +93,6 @@ if(ENABLE_LTO)
     set(SYSTEM_TUNING_FLAGS "${SYSTEM_TUNING_FLAGS} -flto")
 endif()
 
-# Add additional flags for performance to Release build type
-if(CMAKE_BUILD_TYPE "Release")
-    target_compile_options(${PROJECT_NAME} PRIVATE "${SYSTEM_TUNING_FLAGS}")
-    target_link_libraries(${PROJECT_NAME} PRIVATE "${SYSTEM_TUNING_FLAGS} -s")
-endif()
-
-
 
 ### Project Sources ###
 set(PROJECT_HEADERS
@@ -114,11 +107,24 @@ set(PROJECT_SOURCES
 add_executable(${PROJECT_NAME} ${PROJECT_HEADERS} ${PROJECT_SOURCES})
 
 # Add a version string
-target_compile_definitions(${PROJECT_NAME} "${PROJECT_VERSION}-alpha")  # Alpha
+target_compile_definitions(${PROJECT_NAME} PRIVATE "VERSION=\"${PROJECT_VERSION}-alpha\"")
 
-# Project include directories
+# Configure CXX properties
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO
+)
+
+# Add additional flags for performance to Release build type
+if(CMAKE_BUILD_TYPE EQUAL "Release")
+    target_compile_options(${PROJECT_NAME} PRIVATE "${SYSTEM_TUNING_FLAGS}")
+    target_link_libraries(${PROJECT_NAME} PRIVATE "${SYSTEM_TUNING_FLAGS} -s")
+endif()
+
+
+# Project include directory
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
-
 
 # Specify include directories for libraries
 target_include_directories(${PROJECT_NAME}
@@ -128,6 +134,6 @@ target_include_directories(${PROJECT_NAME}
 
 # Link libraries
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC OPTIMIZED ${OpenCV_LIBS}
-    PUBLIC OPTIMIZED ${DLIB_LIBS}
+    PUBLIC optimized ${OpenCV_LIBS}
+    PUBLIC optimized ${DLIB_LIBS}
 )

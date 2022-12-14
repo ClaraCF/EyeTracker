@@ -1,6 +1,6 @@
-[submodule "lib/opencv"]
-	path = lib/opencv
+[submodule "3rdparty/opencv"]
+	path = 3rdparty/opencv
 	url = git@github.com:opencv/opencv.git
-[submodule "lib/dlib"]
-	path = lib/dlib
+[submodule "3rdparty/dlib"]
+	path = 3rdparty/dlib
 	url = git@github.com:davisking/dlib.git
